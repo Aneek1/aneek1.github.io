@@ -1,0 +1,6 @@
+node_modules
+dist
+.vite
+.DS_Store
+*.log
+# NOTE: /docs is the built site that GitHub Pages serves — it IS committed.
