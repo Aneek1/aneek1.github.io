@@ -8,7 +8,7 @@
 export const CONFIG = {
   github: "https://github.com/Aneek1",
   email: "",      // e.g. "aneek@example.com" — leave "" to hide
-  linkedin: "",   // e.g. "https://linkedin.com/in/aneek" — leave "" to hide
+  linkedin: "https://www.linkedin.com/in/aneek-chattopadhyay-1a253020a/",
 };
 
 export const STATUS = {
