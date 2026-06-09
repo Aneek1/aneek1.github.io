@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Aneek Chattopadhyay — AI Engineer</title>
+<meta name="description" content="AI Engineer building production automation agents — AI + ERP + document workflows." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0b0d; --surface:#121317; --surface2:#16181d;
+    --text:#e9eaee; --muted:#9aa1ad; --faint:#6b7280;
+    --accent:#5eead4; --accent-dim:#2dd4bf; --border:#22242b;
+    --green:#4ade80; --amber:#fbbf24; --blue:#7c93ff;
+    --maxw:1080px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg);color:var(--text);
+    font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    line-height:1.6;-webkit-font-smoothing:antialiased;
+    background-image:radial-gradient(900px 500px at 50% -10%, rgba(94,234,212,.07), transparent 70%);
+  }
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+  .mono{font-family:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace}
+
+  nav{position:sticky;top:0;z-index:50;backdrop-filter:blur(10px);
+    background:rgba(10,11,13,.72);border-bottom:1px solid var(--border)}
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:62px}
+  .brand{font-weight:700;letter-spacing:-.02em}
+  .brand .dot{color:var(--accent)}
+  .nav-links{display:flex;gap:28px;font-size:14px;color:var(--muted)}
+  .nav-links a:hover{color:var(--text)}
+  @media(max-width:620px){.nav-links a:not(.kw){display:none}}
+
+  header.hero{padding:120px 0 90px;text-align:center;position:relative;overflow:hidden}
+  .hero .wrap{position:relative;z-index:1}
+  .eyebrow{font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);font-weight:600}
+  h1{font-size:clamp(38px,6vw,68px);line-height:1.04;letter-spacing:-.03em;font-weight:800;margin:18px 0 6px}
+  .hero .sub{font-size:clamp(18px,2.6vw,24px);color:var(--muted);max-width:680px;margin:14px auto 0;font-weight:400}
+  .hero .sub b{color:var(--text);font-weight:600}
+  .cta{display:flex;gap:14px;justify-content:center;margin-top:38px;flex-wrap:wrap}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:12px 22px;border-radius:10px;
+    font-weight:600;font-size:15px;border:1px solid var(--border);transition:.18s;cursor:pointer}
+  .btn.primary{background:var(--accent);color:#06231f;border-color:var(--accent)}
+  .btn.primary:hover{background:var(--accent-dim);transform:translateY(-1px)}
+  .btn.ghost{color:var(--text)}
+  .btn.ghost:hover{border-color:var(--accent);color:var(--accent)}
+
+  .stats{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:46px}
+  .stat{border:1px solid var(--border);background:var(--surface);border-radius:12px;padding:14px 20px;min-width:150px}
+  .stat .n{font-size:22px;font-weight:700;color:var(--accent)}
+  .stat .l{font-size:12.5px;color:var(--muted)}
+
+  section{padding:64px 0}
+  .sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:32px}
+  .sec-head h2{font-size:28px;font-weight:700;letter-spacing:-.02em}
+  .sec-head .tag{font-size:12px;color:var(--accent);font-weight:600;letter-spacing:.1em;text-transform:uppercase}
+  .lead{color:var(--muted);max-width:720px;margin:-18px 0 30px}
+
+  .term{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;max-width:780px;margin:0 auto}
+  .term .bar{display:flex;align-items:center;gap:8px;padding:12px 16px;border-bottom:1px solid var(--border);background:var(--surface2)}
+  .term .bar span{width:11px;height:11px;border-radius:50%;display:inline-block}
+  .term .bar .r{background:#ff5f56}.term .bar .y{background:#ffbd2e}.term .bar .g{background:#27c93f}
+  .term .bar .t{margin-left:10px;font-size:12.5px;color:var(--faint)}
+  .term .body{padding:20px 20px 24px;font-size:14px;line-height:1.9}
+  .term .p{color:var(--accent)} .term .c{color:var(--text)} .term .o{color:var(--muted)}
+
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+  @media(max-width:760px){.grid{grid-template-columns:1fr}}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px;
+    transition:.2s;position:relative;overflow:hidden;cursor:pointer}
+  .card:hover{transform:translateY(-3px);border-color:var(--accent);box-shadow:0 12px 40px -12px rgba(94,234,212,.18)}
+  .card:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .card .top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
+  .card h3{font-size:19px;font-weight:700;letter-spacing:-.01em}
+  .card p{color:var(--muted);font-size:14.5px}
+  .badge{font-size:11px;font-weight:700;padding:4px 10px;border-radius:999px;white-space:nowrap;letter-spacing:.02em}
+  .b-dep{background:rgba(74,222,128,.13);color:var(--green);border:1px solid rgba(74,222,128,.3)}
+  .b-uat{background:rgba(251,191,36,.12);color:var(--amber);border:1px solid rgba(251,191,36,.3)}
+  .b-built{background:rgba(124,147,255,.12);color:var(--blue);border:1px solid rgba(124,147,255,.3)}
+  .b-oss{background:rgba(94,234,212,.12);color:var(--accent);border:1px solid rgba(94,234,212,.32)}
+  .tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:16px}
+  .tag-c{font-size:11.5px;color:var(--muted);background:var(--surface2);border:1px solid var(--border);
+    border-radius:6px;padding:3px 9px}
+  .more{display:inline-block;margin-top:15px;font-size:13px;font-weight:600;color:var(--accent)}
+  .card:hover .more{text-decoration:underline}
+  .repo{display:inline-block;font-size:14px;font-weight:600;color:var(--accent)}
+  .repo:hover{text-decoration:underline}
+
+  .stack{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+  @media(max-width:760px){.stack{grid-template-columns:1fr}}
+  .scol{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px 22px}
+  .scol h4{font-size:13px;text-transform:uppercase;letter-spacing:.12em;color:var(--accent);margin-bottom:12px;font-weight:700}
+  .scol .row{display:flex;flex-wrap:wrap;gap:7px}
+
+  .about p{color:var(--muted);max-width:760px;font-size:16px}
+  .about p b{color:var(--text);font-weight:600}
+
+  footer{border-top:1px solid var(--border);padding:44px 0;margin-top:30px}
+  footer .wrap{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+  .flinks{display:flex;gap:22px;font-size:14.5px}
+  .flinks a{color:var(--muted)}.flinks a:hover{color:var(--accent)}
+  .fnote{font-size:12.5px;color:var(--faint)}
+
+  /* modal */
+  .modal{position:fixed;inset:0;z-index:100;display:none}
+  .modal.show{display:block}
+  .modal-bg{position:absolute;inset:0;background:rgba(0,0,0,.62);backdrop-filter:blur(3px)}
+  .modal-panel{position:relative;max-width:720px;margin:7vh auto;background:var(--surface);
+    border:1px solid var(--border);border-radius:16px;padding:34px 36px 36px;max-height:84vh;overflow:auto;
+    box-shadow:0 30px 90px -20px rgba(0,0,0,.75);animation:pop .18s ease}
+  @keyframes pop{from{transform:translateY(8px);opacity:.6}to{transform:none;opacity:1}}
+  @media(max-width:620px){.modal-panel{margin:0;min-height:100vh;border-radius:0;max-height:none}}
+  .modal-x{position:absolute;top:14px;right:18px;background:none;border:none;color:var(--muted);
+    font-size:28px;line-height:1;cursor:pointer}
+  .modal-x:hover{color:var(--text)}
+  .modal-panel h3{font-size:26px;font-weight:700;letter-spacing:-.02em;margin:12px 0 16px}
+  .m-detail{color:var(--muted);font-size:15.5px;line-height:1.78}
+  .m-detail b{color:var(--text);font-weight:600}
+  .m-detail p{margin-bottom:13px}
+  #m-tags{margin-top:20px}
+  #m-repo{margin-top:22px}
+
+  /* ── animations (21st.dev / Aceternity-inspired, vanilla) ── */
+  /* scroll-reveal (class added by JS only when motion is allowed) */
+  .reveal{opacity:0;transform:translateY(22px);
+    transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
+  .reveal.in{opacity:1;transform:none}
+
+  /* aurora glow behind the hero */
+  .aurora{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+  .aurora::before,.aurora::after{content:"";position:absolute;width:55vw;height:55vw;
+    border-radius:50%;filter:blur(90px);opacity:.20}
+  .aurora::before{background:radial-gradient(circle,#5eead4,transparent 60%);
+    top:-22vw;left:-8vw;animation:drift1 19s ease-in-out infinite alternate}
+  .aurora::after{background:radial-gradient(circle,#7c93ff,transparent 60%);
+    top:-14vw;right:-12vw;animation:drift2 23s ease-in-out infinite alternate}
+  @keyframes drift1{to{transform:translate(10vw,7vw) scale(1.15)}}
+  @keyframes drift2{to{transform:translate(-9vw,9vw) scale(1.1)}}
+
+  /* animated gradient headline accent */
+  h1 .grad{background:linear-gradient(100deg,#5eead4,#7c93ff,#5eead4);background-size:200% auto;
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;
+    animation:shine 6s linear infinite}
+  @keyframes shine{to{background-position:200% center}}
+
+  /* spotlight that follows the cursor on cards */
+  .card::before{content:"";position:absolute;inset:0;border-radius:inherit;opacity:0;
+    transition:opacity .3s;pointer-events:none;z-index:0;
+    background:radial-gradient(440px circle at var(--mx,50%) var(--my,0%), rgba(94,234,212,.13), transparent 45%)}
+  .card:hover::before{opacity:1}
+  .card>*{position:relative;z-index:1}
+
+  /* shimmer sweep on the primary button */
+  .btn.primary{position:relative;overflow:hidden}
+  .btn.primary::after{content:"";position:absolute;top:0;left:-130%;width:55%;height:100%;
+    transform:skewX(-20deg);background:linear-gradient(120deg,transparent,rgba(255,255,255,.35),transparent)}
+  .btn.primary:hover::after{animation:sweep .75s ease}
+  @keyframes sweep{to{left:150%}}
+
+  /* hero entrance (pure CSS, only when motion is allowed) */
+  @keyframes fadeUp{to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion: no-preference){
+    .hero .eyebrow,.hero h1,.hero .sub,.hero .cta,.hero .stats{
+      opacity:0;transform:translateY(16px);animation:fadeUp .8s cubic-bezier(.2,.7,.2,1) forwards}
+    .hero h1{animation-delay:.08s}.hero .sub{animation-delay:.18s}
+    .hero .cta{animation-delay:.28s}.hero .stats{animation-delay:.40s}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .aurora::before,.aurora::after,h1 .grad{animation:none}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="brand">aneek<span class="dot">.</span></div>
+    <div class="nav-links">
+      <a href="#work">Work</a>
+      <a href="#stack">Stack</a>
+      <a href="#about">About</a>
+      <a class="kw" data-github href="#">GitHub</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="aurora"></div>
+  <div class="wrap">
+    <div class="eyebrow">AI Engineer</div>
+    <h1>I build AI agents<br>that do <span class="grad">real work</span>.</h1>
+    <p class="sub">I design and ship <b>production automation agents</b> — AI wired into ERP systems, email, and document workflows to remove manual, repetitive work end-to-end.</p>
+    <div class="cta">
+      <a class="btn primary" href="#work">View work →</a>
+      <a class="btn ghost" data-github href="#">GitHub</a>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="n">4+</div><div class="l">production AI agents</div></div>
+      <div class="stat"><div class="n">ERP · Email · OCR</div><div class="l">workflows automated</div></div>
+      <div class="stat"><div class="n">AI · Full-stack · Robotics</div><div class="l">across the portfolio</div></div>
+    </div>
+  </div>
+</header>
+
+<section style="padding-top:10px">
+  <div class="wrap">
+    <div class="term">
+      <div class="bar"><span class="r"></span><span class="y"></span><span class="g"></span><span class="t mono">aneek@portfolio: ~</span></div>
+      <div class="body mono">
+        <div><span class="p">$</span> <span class="c">whoami</span></div>
+        <div class="o">AI engineer. I build automation agents on top of foundation models —</div>
+        <div class="o">prompting, tool use, retrieval, evals, and the unglamorous integration</div>
+        <div class="o">work that makes them reliable in production.</div>
+        <div style="height:10px"></div>
+        <div><span class="p">$</span> <span class="c">cat principles.txt</span></div>
+        <div class="o">› deterministic lookups before AI &nbsp; › cost &amp; latency are features</div>
+        <div class="o">› log every call &nbsp; › fail loudly &nbsp; › ship, then measure</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="work">
+  <div class="wrap">
+    <div class="sec-head"><span class="tag">/ work</span><h2>Selected projects</h2></div>
+    <p class="lead">Click any project for the full story. A mix of production AI agents built into a live ERP, a full-stack AI product, and robotics / computer-vision work.</p>
+    <div class="grid" id="projects"><!-- rendered from PROJECTS below --></div>
+  </div>
+</section>
+
+<section id="stack">
+  <div class="wrap">
+    <div class="sec-head"><span class="tag">/ stack</span><h2>How I build</h2></div>
+    <div class="stack">
+      <div class="scol"><h4>AI / Agents</h4><div class="row">
+        <span class="tag-c">Anthropic Claude</span><span class="tag-c">OpenAI / Gemini</span>
+        <span class="tag-c">Tool use / function calling</span><span class="tag-c">Agentic workflows</span>
+        <span class="tag-c">RAG</span><span class="tag-c">Prompt caching</span>
+        <span class="tag-c">Vision / OCR</span><span class="tag-c">Computer vision</span>
+        <span class="tag-c">Evals</span><span class="tag-c">Cost &amp; usage control</span>
+      </div></div>
+      <div class="scol"><h4>Frontend</h4><div class="row">
+        <span class="tag-c">React</span><span class="tag-c">TypeScript</span>
+        <span class="tag-c">Vite</span><span class="tag-c">TailwindCSS</span>
+        <span class="tag-c">Electron</span>
+      </div></div>
+      <div class="scol"><h4>Backend</h4><div class="row">
+        <span class="tag-c">Python</span><span class="tag-c">Flask</span>
+        <span class="tag-c">FastAPI</span><span class="tag-c">Node / Express</span>
+        <span class="tag-c">Socket.IO / WebSockets</span><span class="tag-c">SQLite</span>
+        <span class="tag-c">MongoDB</span>
+      </div></div>
+      <div class="scol"><h4>Integration &amp; Automation</h4><div class="row">
+        <span class="tag-c">Dynamics 365 Business Central</span><span class="tag-c">OData</span>
+        <span class="tag-c">Selenium</span><span class="tag-c">Outlook / Graph</span>
+        <span class="tag-c">Document parsing</span>
+      </div></div>
+      <div class="scol"><h4>Robotics &amp; Simulation</h4><div class="row">
+        <span class="tag-c">ROS 2</span><span class="tag-c">Nav2</span>
+        <span class="tag-c">Lidar / Depth fusion</span><span class="tag-c">A* path planning</span>
+        <span class="tag-c">Digital twins</span>
+      </div></div>
+      <div class="scol"><h4>Cloud &amp; Ops</h4><div class="row">
+        <span class="tag-c">Azure</span><span class="tag-c">Static Web Apps</span>
+        <span class="tag-c">Azure SQL</span><span class="tag-c">Entra ID</span>
+        <span class="tag-c">Blob Storage</span><span class="tag-c">Docker</span>
+      </div></div>
+    </div>
+  </div>
+</section>
+
+<section id="about" class="about">
+  <div class="wrap">
+    <div class="sec-head"><span class="tag">/ about</span><h2>About</h2></div>
+    <p>I'm an <b>AI engineer</b> focused on turning foundation models into dependable production systems. Most of my work lives <b>above the API line</b>: prompting, retrieval, tool use, evals, and the integration and reliability engineering that makes an agent trustworthy enough to run a real business process. Alongside that I build full-stack AI products and have a background in robotics and computer vision. <!-- Keep / generalise / remove the employer line below as you prefer -->I currently build automation agents for the operations and procurement teams at <b>SP Manufacturing</b>, wiring AI into ERP, email, and document workflows.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="flinks" id="flinks"><!-- rendered from CONFIG --></div>
+    <div class="fnote">© 2026 Aneek Chattopadhyay · Static site on GitHub Pages</div>
+  </div>
+</footer>
+
+<!-- project detail modal -->
+<div class="modal" id="modal" aria-hidden="true">
+  <div class="modal-bg" data-close></div>
+  <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="m-title">
+    <button class="modal-x" data-close aria-label="Close">&times;</button>
+    <div id="m-badge"></div>
+    <h3 id="m-title"></h3>
+    <div class="m-detail" id="m-detail"></div>
+    <div class="tags" id="m-tags"></div>
+    <a class="repo" id="m-repo" target="_blank" rel="noopener">View code on GitHub ↗</a>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════════════
+     EDIT EVERYTHING BELOW — no HTML knowledge needed.
+     · Add a project  → add one object to PROJECTS (top = shown first).
+     · status options → "deployed" | "uat" | "built" | "progress" | "oss"
+                        (or set statusLabel:"…" to override the text).
+     · desc   = short blurb on the card.
+     · detail = the in-depth write-up shown when the card is clicked
+                (you can use <p>…</p> and <b>…</b>).
+     · link   = repo/live URL (optional) — shown as a button in the detail view.
+     · Links  → fill CONFIG. Leave email/linkedin "" to hide them.
+     ════════════════════════════════════════════════════════════════════ -->
+<script>
+const CONFIG = {
+  github:   "https://github.com/Aneek1",
+  email:    "",   // e.g. "aneek@example.com" — leave "" to hide
+  linkedin: ""    // e.g. "https://linkedin.com/in/aneek" — add later; "" hides it
+};
+
+const PROJECTS = [
+  { title:"PO Agent — Vendor Follow-up", status:"uat",
+    desc:`Autonomous agent that chases vendors for missing committed delivery dates on purchase orders — and stops the moment a vendor responds.`,
+    tags:["Python","Claude API","BC OData","Selenium","Outlook","SQLite"],
+    detail:`<p><b>The problem.</b> Buyers spend hours each week manually emailing vendors to confirm delivery dates on open purchase orders, and re-chasing the ones that haven't replied.</p>
+      <p><b>What it does.</b> The agent reads released purchase orders from <b>Microsoft Dynamics 365 Business Central</b> over OData and, for any line still missing a vendor-committed date, emails the vendor a follow-up — escalating through a tiered ladder (gentle reminder → urgent → escalation) as time passes, with the official PO PDF attached.</p>
+      <p><b>Why it's reliable.</b> Before every send it re-reads the live ERP record, so a PO the vendor has already answered is never chased. Every send is logged, sends are de-duplicated, and during testing all mail can be safely redirected to a tester while preserving the real To/Cc/Bcc shape.</p>
+      <p><b>Tech.</b> Python · Anthropic Claude · Business Central OData · Selenium (for the branded PO PDF) · Outlook · SQLite for state. <b>Status:</b> in UAT with buyers.</p>` },
+
+  { title:"SO Agent — Sales Order Entry", status:"deployed",
+    desc:`Turns incoming customer POs (PDF / Excel / email) into Sales Orders in the ERP after a quick operator review.`,
+    tags:["Python","Flask + Socket.IO","Claude API","Doc parsing","BC OData"],
+    detail:`<p><b>The problem.</b> Customer purchase orders arrive as PDFs, spreadsheets, and emails — and get re-typed into the ERP by hand, slowly and with errors.</p>
+      <p><b>What it does.</b> It ingests the document, uses AI to parse the line items, then matches each item and the customer against <b>live ERP master data</b> — including revision lookup and in-stock substitutes — and creates the Sales Order after a quick operator review.</p>
+      <p><b>Why it's reliable.</b> Nothing is written to the ERP until the operator approves. Order creation is fully browserless via OData and resilient to the ERP's number-series configuration, so it keeps working even when settings change.</p>
+      <p><b>Tech.</b> Python · Flask + Socket.IO dashboard · Anthropic Claude · document parsing · Business Central OData. <b>Status:</b> deployed and verified end-to-end.</p>` },
+
+  { title:"OCR Agent — Document Extraction", status:"deployed",
+    desc:`LAN-hosted OCR that pulls structured data out of supplier invoices and delivery orders — share one URL, nothing to install.`,
+    tags:["Python","Flask","Claude Vision","PDF","Cost control"],
+    detail:`<p><b>The problem.</b> An earlier browser-only OCR tool had to be emailed to each user and couldn't be centrally controlled or cost-capped.</p>
+      <p><b>What it does.</b> A LAN-hosted service that extracts structured fields from supplier invoices and delivery orders, shared through a single URL — users need only a browser.</p>
+      <p><b>How it's built well.</b> The API key stays <b>server-side</b>, with per-user daily token caps and full per-call usage logging. Inference is cost-optimised: it reads the PDF's text layer first, falls back to a lean vision model only when needed, and caches results by file hash.</p>
+      <p><b>Tech.</b> Python · Flask · Claude (vision) · PDF processing. <b>Status:</b> deployed.</p>` },
+
+  { title:"VCD Updater — Bulk ERP Write-back", status:"built",
+    desc:`The write-back companion to the follow-up agent — pushes vendor-committed dates back into the ERP in bulk.`,
+    tags:["Python","BC OData","Batch automation"],
+    detail:`<p><b>What it does.</b> Once vendors reply with their committed dates, this service writes them back into the matching purchase orders in <b>Business Central in bulk over OData</b> — eliminating manual re-keying and closing the loop the PO Agent opens.</p>
+      <p><b>Where it fits.</b> Together with the PO Agent it forms a full read → chase → write-back cycle on purchase-order delivery dates, sharing the same ERP integration layer.</p>
+      <p><b>Tech.</b> Python · Business Central OData · batch automation. <b>Status:</b> built; OData write-back verified, queued behind the PO/SO rollout.</p>` },
+
+  { title:"Cloud Migration & Agent Suite", status:"progress",
+    desc:`Consolidated the agents and architected a multi-user Azure deployment with company SSO and an audit trail.`,
+    tags:["Azure","Azure SQL","Entra ID","FastAPI","Worker queue"],
+    detail:`<p><b>The goal.</b> Single-user, per-laptop deployments are a bottleneck — teams across sites need access without each installing the tools.</p>
+      <p><b>What it does.</b> Consolidated the separate agents behind one service, then architected a <b>multi-user Azure deployment</b>: a Static Web App UI, Azure SQL for shared state, and a local automation worker that pulls jobs from the cloud and posts results back — with company SSO (Entra ID) and an audit trail.</p>
+      <p><b>Approach.</b> Pure logic moves to the cloud API; the browser/desktop automation stays local as a worker that claims jobs from a queue. The existing local agents keep running unchanged as a fallback throughout the migration.</p>
+      <p><b>Tech.</b> Azure (Static Web Apps, Azure SQL, Blob Storage, Entra ID) · FastAPI / Flask · worker-queue pattern. <b>Status:</b> in progress.</p>` },
+
+  { title:"Workflow Apps — NCMR / MR & LMS", status:"deployed",
+    desc:`Turned internal prototypes into real apps — document workflows and a learning / presentation platform.`,
+    tags:["Flask","SQLite","JavaScript","Azure"],
+    detail:`<p><b>What it does.</b> Productised internal tools. Two document-workflow prototypes (non-conformance reports and material requests) were ported from standalone HTML into a single <b>Flask + SQLite</b> app with server-side persistence — preserving the original interface via a localStorage→server shim so users saw no disruption.</p>
+      <p>Also built a learning / presentation platform running on shared cloud infrastructure.</p>
+      <p><b>Tech.</b> Flask · SQLite · JavaScript · Azure. <b>Status:</b> deployed.</p>` },
+
+  // ── open-source / personal projects (public on GitHub) ──
+  { title:"AIApplyMate", status:"oss", link:"https://github.com/Aneek1/aiapplymate",
+    desc:`Full-stack AI web app that tailors résumés to a job description and writes matching cover letters, with ATS scoring.`,
+    tags:["React","TypeScript","Node / Express","MongoDB","Gemini API","Vite"],
+    detail:`<p><b>What it is.</b> A free, open-source, self-hostable web app that customises a résumé to a specific job description and generates a matching cover letter.</p>
+      <p><b>Features.</b> ATS-compatibility scoring with keyword injection, multi-format input parsing (PDF / DOCX / TXT), a saved document history, polished PDF export, and fully anonymous use with no account.</p>
+      <p><b>Tech.</b> React 19 + TypeScript + Vite + TailwindCSS + shadcn/ui on the front end; Node / Express + MongoDB on the back end; Google Gemini for generation; Puppeteer for PDF rendering; pdfjs &amp; mammoth for parsing. MIT licensed.</p>` },
+
+  { title:"mTrack — AI PCBA Inspection", status:"oss", link:"https://github.com/Aneek1/mTrack_SP",
+    desc:`An LLM-driven gantry that inspects circuit-board assemblies inside a real-time 2D digital twin.`,
+    tags:["Python","FastAPI","WebSockets","React","Electron","Computer vision"],
+    detail:`<p><b>What it is.</b> An LLM-powered AI gantry that inspects printed-circuit-board assemblies (PCBAs) inside a real-time <b>2D digital-twin simulation</b> — a demonstration of autonomous robot-inspection workflows for high-mix manufacturing lines.</p>
+      <p><b>How it works.</b> A test-case generator creates random boards with configurable defects; the gantry navigates with <b>A* obstacle-aware path planning</b> (with a scan-pattern fallback); a vision pipeline provides perception (ground-truth, with optional YOLO); and multiple LLM providers (<b>Anthropic, OpenAI, Gemini</b>) drive inspection decisions — all streamed live at 20 Hz with full session analytics.</p>
+      <p><b>Tech.</b> Python 3.9+ / FastAPI / WebSocket backend · TypeScript / React / Electron / Vite frontend.</p>` },
+
+  { title:"Automated Wheelchair", status:"oss", link:"https://github.com/Aneek1/Automated-Wheelchair",
+    desc:`An autonomous wheelchair built on ROS 2 — Nav2 navigation, sensor fusion, and autonomous exploration.`,
+    tags:["Python","ROS 2","Nav2","Lidar / Depth","Robotics"],
+    detail:`<p><b>What it is.</b> An autonomous wheelchair system built on <b>ROS 2</b>.</p>
+      <p><b>How it works.</b> It uses the Nav2 navigation stack for path planning, fuses lidar and depth-sensor data for perception, and performs autonomous exploration of its environment. The project includes a Blender simulation, 3D-printable STL hardware models, and a technical report and presentation.</p>
+      <p><b>Tech.</b> Python · ROS 2 · Nav2 · lidar / depth sensors.</p>` },
+
+  { title:"Soft-Robotics Chatbot", status:"oss", link:"https://github.com/Aneek1/ai-chatbot-softrobotics",
+    desc:`A retrieval chatbot that answers soft-robotics fabrication questions from a curated dataset.`,
+    tags:["Python","Gemini API","spaCy","RAG","GUI"],
+    detail:`<p><b>What it is.</b> An intelligent chatbot that answers questions about soft-robotics fabrication methods.</p>
+      <p><b>How it works.</b> It retrieves from a curated CSV knowledge base and uses Google Gemini to compose answers — an early retrieval-augmented assistant, with spaCy-based NLP and a cross-platform desktop GUI.</p>
+      <p><b>Tech.</b> Python · Google Gemini · spaCy · CSV retrieval.</p>` },
+];
+
+// ── renderer (no need to edit below) ──────────────────────────────────
+const STATUS = {
+  deployed:{l:"Deployed",   c:"b-dep"},
+  uat:     {l:"In UAT",     c:"b-uat"},
+  built:   {l:"Built",      c:"b-built"},
+  progress:{l:"In progress",c:"b-built"},
+  oss:     {l:"Open source",c:"b-oss"},
+};
+const esc = s => String(s).replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+const badgeHTML = p => { const st = STATUS[p.status]||STATUS.built;
+  return `<span class="badge ${st.c}">${esc(p.statusLabel||st.l)}</span>`; };
+
+document.getElementById("projects").innerHTML = PROJECTS.map((p,i) => `
+  <div class="card" data-i="${i}" tabindex="0" role="button" aria-label="${esc(p.title)} — view details">
+    <div class="top"><h3>${esc(p.title)}</h3>${badgeHTML(p)}</div>
+    <p>${p.desc}</p>
+    <div class="tags">${(p.tags||[]).map(t=>`<span class="tag-c">${esc(t)}</span>`).join("")}</div>
+    <span class="more">View details →</span>
+  </div>`).join("");
+
+// ── detail modal ──────────────────────────────────────────────────────
+const modal = document.getElementById("modal");
+function openModal(i){
+  const p = PROJECTS[i];
+  document.getElementById("m-badge").innerHTML = badgeHTML(p);
+  document.getElementById("m-title").textContent = p.title;
+  document.getElementById("m-detail").innerHTML = p.detail || `<p>${p.desc}</p>`;
+  document.getElementById("m-tags").innerHTML = (p.tags||[]).map(t=>`<span class="tag-c">${esc(t)}</span>`).join("");
+  const repo = document.getElementById("m-repo");
+  if(p.link){ repo.style.display="inline-block"; repo.href = p.link; }
+  else { repo.style.display="none"; }
+  modal.classList.add("show"); modal.setAttribute("aria-hidden","false");
+  document.body.style.overflow="hidden";
+  document.querySelector(".modal-x").focus();
+}
+function closeModal(){
+  modal.classList.remove("show"); modal.setAttribute("aria-hidden","true");
+  document.body.style.overflow="";
+}
+document.querySelectorAll(".card").forEach(c => {
+  c.addEventListener("click", () => openModal(+c.dataset.i));
+  c.addEventListener("keydown", e => { if(e.key==="Enter"||e.key===" "){ e.preventDefault(); openModal(+c.dataset.i); } });
+});
+modal.querySelectorAll("[data-close]").forEach(el => el.addEventListener("click", closeModal));
+document.addEventListener("keydown", e => { if(e.key==="Escape" && modal.classList.contains("show")) closeModal(); });
+
+// ── config-driven links ───────────────────────────────────────────────
+document.querySelectorAll("[data-github]").forEach(a => { a.href = CONFIG.github; });
+const links = [];
+if (CONFIG.email)    links.push(`<a href="mailto:${esc(CONFIG.email)}">Email</a>`);
+links.push(`<a href="${esc(CONFIG.github)}">GitHub</a>`);
+if (CONFIG.linkedin) links.push(`<a href="${esc(CONFIG.linkedin)}">LinkedIn</a>`);
+document.getElementById("flinks").innerHTML = links.join("");
+
+// ── animations (21st.dev-inspired): scroll-reveal, spotlight, terminal print ──
+(function(){
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduce || !("IntersectionObserver" in window)) return;  // motion off → everything stays visible
+
+  // 1) scroll-reveal: fade + rise as elements enter the viewport
+  var els = Array.prototype.slice.call(document.querySelectorAll(
+    ".term, .sec-head, #work .lead, .card, .scol, .about p, footer .wrap"));
+  els.forEach(function(el){ el.classList.add("reveal"); });
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if (e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.12, rootMargin: "0px 0px -40px 0px" });
+  els.forEach(function(el){ io.observe(el); });
+
+  // 2) spotlight follows the cursor across each project card
+  document.querySelectorAll(".card").forEach(function(card){
+    card.addEventListener("mousemove", function(e){
+      var r = card.getBoundingClientRect();
+      card.style.setProperty("--mx", (e.clientX - r.left) + "px");
+      card.style.setProperty("--my", (e.clientY - r.top) + "px");
+    });
+  });
+
+  // 3) terminal "prints" line by line when it scrolls into view
+  var term = document.querySelector(".term");
+  if (term){
+    var lines = term.querySelectorAll(".body > div");
+    lines.forEach(function(l){ l.style.opacity = "0"; });
+    var tio = new IntersectionObserver(function(es){
+      es.forEach(function(e){
+        if (e.isIntersecting){
+          lines.forEach(function(l,i){ l.style.animation = "fadeUp .4s ease " + (i*0.1) + "s forwards"; });
+          tio.disconnect();
+        }
+      });
+    }, { threshold: 0.3 });
+    tio.observe(term);
+  }
+})();
+</script>
+</body>
+</html>
