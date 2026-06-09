@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { useEffect, useState, useRef } from "react";
+import { motion, AnimatePresence, useReducedMotion, useMotionValue, useSpring } from "framer-motion";
 import { PROJECTS, STATUS, CONFIG } from "./data.js";
 
 /* ---------- theme ---------- */
@@ -24,6 +24,67 @@ const Moon = () => (
     <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
   </svg>
 );
+
+/* ---------- custom follow-cursor (desktop, motion-on only) ---------- */
+function Cursor() {
+  const reduce = useReducedMotion();
+  const x = useMotionValue(-100), y = useMotionValue(-100);
+  const sx = useSpring(x, { stiffness: 500, damping: 40, mass: 0.5 });
+  const sy = useSpring(y, { stiffness: 500, damping: 40, mass: 0.5 });
+  const [hover, setHover] = useState(false);
+  useEffect(() => {
+    if (reduce || window.matchMedia("(pointer: coarse)").matches) return;
+    document.body.classList.add("has-cursor");
+    const move = (e) => { x.set(e.clientX); y.set(e.clientY); };
+    const over = (e) => setHover(!!e.target.closest('a,button,.card,[role="button"],.toggle'));
+    window.addEventListener("mousemove", move);
+    document.addEventListener("mouseover", over);
+    return () => {
+      window.removeEventListener("mousemove", move);
+      document.removeEventListener("mouseover", over);
+      document.body.classList.remove("has-cursor");
+    };
+  }, [reduce, x, y]);
+  if (reduce) return null;
+  return (
+    <motion.div className="cursor" style={{ x: sx, y: sy }}
+      animate={{ scale: hover ? 2.6 : 1 }}
+      transition={{ type: "spring", stiffness: 300, damping: 20 }} />
+  );
+}
+
+/* ---------- magnetic wrapper (pulls toward the cursor) ---------- */
+function Magnetic({ children }) {
+  const reduce = useReducedMotion();
+  const ref = useRef(null);
+  const x = useMotionValue(0), y = useMotionValue(0);
+  const sx = useSpring(x, { stiffness: 200, damping: 15 });
+  const sy = useSpring(y, { stiffness: 200, damping: 15 });
+  if (reduce) return children;
+  return (
+    <motion.span ref={ref} style={{ x: sx, y: sy, display: "inline-block" }}
+      onMouseMove={(e) => {
+        const r = ref.current.getBoundingClientRect();
+        x.set((e.clientX - (r.left + r.width / 2)) * 0.35);
+        y.set((e.clientY - (r.top + r.height / 2)) * 0.35);
+      }}
+      onMouseLeave={() => { x.set(0); y.set(0); }}>
+      {children}
+    </motion.span>
+  );
+}
+
+/* ---------- infinite scrolling marquee ---------- */
+function Marquee({ items }) {
+  const row = [...items, ...items];
+  return (
+    <div className="marquee" aria-hidden="true">
+      <div className="marquee-track">
+        {row.map((t, i) => <span key={i} className="m-item">{t}<b>✦</b></span>)}
+      </div>
+    </div>
+  );
+}
 
 export default function App() {
   const [theme, toggleTheme] = useTheme();
@@ -66,6 +127,7 @@ export default function App() {
 
   return (
     <>
+      <Cursor />
       {/* nav */}
       <nav>
         <div className="wrap">
@@ -95,7 +157,7 @@ export default function App() {
             and document workflows to remove manual, repetitive work end-to-end.
           </motion.p>
           <motion.div className="cta" variants={item}>
-            <a className="btn primary" href="#work">View work →</a>
+            <Magnetic><a className="btn primary" href="#work">View work →</a></Magnetic>
             <a className="btn ghost" href={CONFIG.github}>GitHub</a>
           </motion.div>
           <motion.div className="stats" variants={item}>
@@ -105,6 +167,9 @@ export default function App() {
           </motion.div>
         </motion.div>
       </header>
+
+      {/* marquee */}
+      <Marquee items={["Anthropic Claude", "Business Central", "Python", "React", "Framer Motion", "ROS 2", "Azure", "RAG", "Computer Vision", "FastAPI", "OData", "Automation Agents"]} />
 
       {/* terminal */}
       <section style={{ paddingTop: 10 }}>

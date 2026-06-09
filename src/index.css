@@ -2,17 +2,17 @@
 :root, :root[data-theme="dark"]{
   --bg:#0a0b0d; --surface:#121317; --surface2:#16181d;
   --text:#e9eaee; --muted:#9aa1ad; --faint:#6b7280;
-  --accent:#5eead4; --accent-2:#7c93ff; --border:#22242b;
-  --g:#4ade80; --am:#fbbf24; --bl:#7c93ff;
-  --card-shadow:0 12px 40px -12px rgba(94,234,212,.18);
+  --accent:#c2ff3d; --accent-2:#a3e635; --border:#23271d;
+  --g:#4ade80; --am:#fbbf24; --bl:#a3e635;
+  --card-shadow:0 14px 44px -12px rgba(194,255,61,.22);
   --aurora-o:.20; --grad-fill:transparent;
 }
 :root[data-theme="light"]{
   --bg:#f6f8fb; --surface:#ffffff; --surface2:#eef2f7;
   --text:#101826; --muted:#566072; --faint:#8a94a3;
-  --accent:#0d9488; --accent-2:#4f46e5; --border:#e3e8ef;
-  --g:#16a34a; --am:#b45309; --bl:#4f46e5;
-  --card-shadow:0 16px 40px -18px rgba(13,148,136,.28);
+  --accent:#4d7c0f; --accent-2:#3f6212; --border:#e3e8ef;
+  --g:#16a34a; --am:#b45309; --bl:#4d7c0f;
+  --card-shadow:0 16px 40px -18px rgba(77,124,15,.26);
   --aurora-o:.16;
 }
 
@@ -51,7 +51,7 @@ nav .wrap{display:flex;align-items:center;justify-content:space-between;height:6
 header.hero{padding:120px 0 90px;text-align:center;position:relative;overflow:hidden}
 .hero .wrap{position:relative;z-index:1}
 .eyebrow{font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);font-weight:600}
-h1{font-size:clamp(38px,6vw,68px);line-height:1.04;letter-spacing:-.03em;font-weight:800;margin:18px 0 6px}
+h1{font-size:clamp(42px,7vw,82px);line-height:1.02;letter-spacing:-.035em;font-weight:800;margin:18px 0 6px}
 h1 .grad{background:linear-gradient(100deg,var(--accent),var(--accent-2),var(--accent));
   background-size:200% auto;-webkit-background-clip:text;background-clip:text;
   -webkit-text-fill-color:transparent;color:transparent;animation:shine 6s linear infinite}
@@ -61,7 +61,7 @@ h1 .grad{background:linear-gradient(100deg,var(--accent),var(--accent-2),var(--a
 .cta{display:flex;gap:14px;justify-content:center;margin-top:38px;flex-wrap:wrap}
 .btn{display:inline-flex;align-items:center;gap:8px;padding:12px 22px;border-radius:10px;
   font-weight:600;font-size:15px;border:1px solid var(--border);cursor:pointer;transition:.18s}
-.btn.primary{background:var(--accent);color:#06231f;border-color:var(--accent);position:relative;overflow:hidden}
+.btn.primary{background:var(--accent);color:#0a0b0d;border-color:var(--accent);position:relative;overflow:hidden}
 :root[data-theme="light"] .btn.primary{color:#ffffff}
 .btn.primary::after{content:"";position:absolute;top:0;left:-130%;width:55%;height:100%;transform:skewX(-20deg);
   background:linear-gradient(120deg,transparent,rgba(255,255,255,.4),transparent)}
@@ -154,7 +154,24 @@ footer .wrap{display:flex;align-items:center;justify-content:space-between;flex-
 .m-repo{display:inline-block;margin-top:22px;font-size:14px;font-weight:600;color:var(--accent)}
 .m-repo:hover{text-decoration:underline}
 
+/* ============ marquee ============ */
+.marquee{overflow:hidden;white-space:nowrap;border-block:1px solid var(--border);padding:16px 0;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);
+  mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.marquee-track{display:inline-flex;align-items:center;animation:scroll 34s linear infinite;will-change:transform}
+.marquee:hover .marquee-track{animation-play-state:paused}
+.m-item{font-size:clamp(15px,2.2vw,21px);font-weight:700;text-transform:uppercase;
+  letter-spacing:.04em;color:var(--text);display:inline-flex;align-items:center}
+.m-item b{color:var(--accent);margin:0 26px;font-size:.85em;line-height:1}
+@keyframes scroll{to{transform:translateX(-50%)}}
+
+/* ============ custom cursor ============ */
+.cursor{position:fixed;top:0;left:0;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;
+  background:var(--accent);pointer-events:none;z-index:9999;mix-blend-mode:difference}
+.has-cursor,.has-cursor a,.has-cursor button,.has-cursor .card,.has-cursor [role="button"],.has-cursor .toggle{cursor:none}
+@media (pointer:coarse){.cursor{display:none}}
+
 @media (prefers-reduced-motion: reduce){
-  .aurora span,h1 .grad{animation:none}
+  .aurora span,h1 .grad,.marquee-track{animation:none}
   *{transition:none!important}
 }
