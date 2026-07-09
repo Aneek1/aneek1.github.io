@@ -1,13 +1,13 @@
 // Edit this file to maintain the portfolio.
 //  · Add a project → add one object to PROJECTS (top = shown first).
 //  · status        → "deployed" | "uat" | "built" | "progress" | "oss"
-//  · desc          → short card blurb.  detail → in-depth HTML shown on click.
+//  · desc          → short blurb shown in the list.  detail → in-depth HTML shown on click.
 //  · link          → repo/live URL (optional; shows a button in the detail view).
 //  · Links         → CONFIG. Leave email/linkedin "" to hide them.
 
 export const CONFIG = {
   github: "https://github.com/Aneek1",
-  email: "",      // e.g. "aneek@example.com" — leave "" to hide
+  email: "chattopadhyaya70@gmail.com", // leave "" to hide
   linkedin: "https://www.linkedin.com/in/aneek-chattopadhyay-1a253020a/",
 };
 
@@ -18,6 +18,41 @@ export const STATUS = {
   progress: { label: "In progress", cls: "b-built" },
   oss:      { label: "Open source", cls: "b-oss" },
 };
+
+export const EXPERIENCE = [
+  {
+    role: "AI Engineer",
+    org: "SP Manufacturing",
+    where: "Singapore",
+    when: "2025 — Present",
+    blurb:
+      "Building production automation agents for operations and procurement — AI wired into Dynamics 365 Business Central, Outlook, and document workflows.",
+  },
+  {
+    role: "AI & Hardware Engineering Intern",
+    org: "TicTag",
+    where: "Singapore",
+    when: "2025",
+    blurb:
+      "Edge AI on NVIDIA Jetson — perception-to-action pipelines, custom PCB sensor integration, and low-latency embedded inference.",
+  },
+  {
+    role: "Robotics Research Assistant",
+    org: "SUTD",
+    where: "Singapore",
+    when: "2024 — 2025",
+    blurb:
+      "Modular multi-sensor system architectures, Python data pipelines, and automated validation workflows for real-world deployment.",
+  },
+  {
+    role: "Summer Research Intern",
+    org: "University of Manchester",
+    where: "UK",
+    when: "2023",
+    blurb:
+      "Pressure-sensitive paint experiments — designed a precision acoustic resonance chamber and validated data against analytical models.",
+  },
+];
 
 export const PROJECTS = [
   {

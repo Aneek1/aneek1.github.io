@@ -1,6 +1,6 @@
-import { useEffect, useState, useRef } from "react";
-import { motion, AnimatePresence, useReducedMotion, useMotionValue, useSpring } from "framer-motion";
-import { PROJECTS, STATUS, CONFIG } from "./data.js";
+import { useEffect, useState } from "react";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { PROJECTS, STATUS, CONFIG, EXPERIENCE } from "./data.js";
 
 /* ---------- theme ---------- */
 function useTheme() {
@@ -15,94 +15,36 @@ function useTheme() {
 }
 
 const Sun = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
     <circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M19 5l-1.5 1.5M6.5 17.5L5 19" />
   </svg>
 );
 const Moon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
     <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
   </svg>
 );
 
-/* ---------- custom follow-cursor (desktop, motion-on only) ---------- */
-function Cursor() {
-  const reduce = useReducedMotion();
-  const x = useMotionValue(-100), y = useMotionValue(-100);
-  const sx = useSpring(x, { stiffness: 500, damping: 40, mass: 0.5 });
-  const sy = useSpring(y, { stiffness: 500, damping: 40, mass: 0.5 });
-  const [hover, setHover] = useState(false);
-  useEffect(() => {
-    if (reduce || window.matchMedia("(pointer: coarse)").matches) return;
-    document.body.classList.add("has-cursor");
-    const move = (e) => { x.set(e.clientX); y.set(e.clientY); };
-    const over = (e) => setHover(!!e.target.closest('a,button,.card,[role="button"],.toggle'));
-    window.addEventListener("mousemove", move);
-    document.addEventListener("mouseover", over);
-    return () => {
-      window.removeEventListener("mousemove", move);
-      document.removeEventListener("mouseover", over);
-      document.body.classList.remove("has-cursor");
-    };
-  }, [reduce, x, y]);
-  if (reduce) return null;
-  return (
-    <motion.div className="cursor" style={{ x: sx, y: sy }}
-      animate={{ scale: hover ? 2.6 : 1 }}
-      transition={{ type: "spring", stiffness: 300, damping: 20 }} />
-  );
-}
-
-/* ---------- magnetic wrapper (pulls toward the cursor) ---------- */
-function Magnetic({ children }) {
-  const reduce = useReducedMotion();
-  const ref = useRef(null);
-  const x = useMotionValue(0), y = useMotionValue(0);
-  const sx = useSpring(x, { stiffness: 200, damping: 15 });
-  const sy = useSpring(y, { stiffness: 200, damping: 15 });
-  if (reduce) return children;
-  return (
-    <motion.span ref={ref} style={{ x: sx, y: sy, display: "inline-block" }}
-      onMouseMove={(e) => {
-        const r = ref.current.getBoundingClientRect();
-        x.set((e.clientX - (r.left + r.width / 2)) * 0.35);
-        y.set((e.clientY - (r.top + r.height / 2)) * 0.35);
-      }}
-      onMouseLeave={() => { x.set(0); y.set(0); }}>
-      {children}
-    </motion.span>
-  );
-}
-
-/* ---------- infinite scrolling marquee ---------- */
-function Marquee({ items }) {
-  const row = [...items, ...items];
-  return (
-    <div className="marquee" aria-hidden="true">
-      <div className="marquee-track">
-        {row.map((t, i) => <span key={i} className="m-item">{t}<b>✦</b></span>)}
-      </div>
-    </div>
-  );
-}
+/* ---------- shared reveal ---------- */
+const EASE = [0.22, 0.72, 0.18, 1];
 
 export default function App() {
   const [theme, toggleTheme] = useTheme();
   const reduce = useReducedMotion();
   const [active, setActive] = useState(null); // selected project for modal
-  const d = reduce ? 0 : 22;
+  const d = reduce ? 0 : 18;
 
-  const container = { hidden: {}, show: { transition: { staggerChildren: 0.07, delayChildren: 0.05 } } };
-  const item = {
-    hidden: { opacity: 0, y: d },
-    show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 130, damping: 18 } },
-  };
   const reveal = {
     initial: { opacity: 0, y: d },
     whileInView: { opacity: 1, y: 0 },
-    viewport: { once: true, margin: "-60px" },
-    transition: { duration: 0.6, ease: [0.2, 0.7, 0.2, 1] },
+    viewport: { once: true, margin: "-70px" },
+    transition: { duration: 0.7, ease: EASE },
   };
+  const heroItem = (i) => ({
+    initial: { opacity: 0, y: d },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.8, delay: 0.08 * i, ease: EASE },
+  });
 
   // close modal on Escape
   useEffect(() => {
@@ -113,13 +55,7 @@ export default function App() {
     return () => { document.removeEventListener("keydown", onKey); document.body.style.overflow = ""; };
   }, [active]);
 
-  const spotlight = (e) => {
-    const r = e.currentTarget.getBoundingClientRect();
-    e.currentTarget.style.setProperty("--mx", `${e.clientX - r.left}px`);
-    e.currentTarget.style.setProperty("--my", `${e.clientY - r.top}px`);
-  };
-
-  const footerLinks = [
+  const contactLinks = [
     CONFIG.email && { href: `mailto:${CONFIG.email}`, label: "Email" },
     { href: CONFIG.github, label: "GitHub" },
     CONFIG.linkedin && { href: CONFIG.linkedin, label: "LinkedIn" },
@@ -127,17 +63,16 @@ export default function App() {
 
   return (
     <>
-      <Cursor />
       {/* nav */}
       <nav>
-        <div className="wrap">
-          <div className="brand">aneek<span className="dot">.</span></div>
+        <div className="wrap nav-in">
+          <a className="brand" href="#top">Aneek Chattopadhyay</a>
           <div className="nav-right">
             <div className="nav-links">
               <a href="#work">Work</a>
+              <a href="#experience">Experience</a>
               <a href="#stack">Stack</a>
-              <a href="#about">About</a>
-              <a href={CONFIG.github}>GitHub</a>
+              <a href="#contact">Contact</a>
             </div>
             <button className="toggle" onClick={toggleTheme} aria-label="Toggle theme">
               {theme === "dark" ? <Sun /> : <Moon />}
@@ -147,47 +82,61 @@ export default function App() {
       </nav>
 
       {/* hero */}
-      <header className="hero">
-        <div className="aurora"><span className="a1" /><span className="a2" /></div>
-        <motion.div className="wrap" variants={container} initial="hidden" animate="show">
-          <motion.div className="eyebrow" variants={item}>AI Engineer</motion.div>
-          <motion.h1 variants={item}>I build AI agents<br />that do <span className="grad">real work</span>.</motion.h1>
-          <motion.p className="sub" variants={item}>
-            I design and ship <b>production automation agents</b> — AI wired into ERP systems, email,
-            and document workflows to remove manual, repetitive work end-to-end.
+      <header className="hero" id="top">
+        <div className="wrap">
+          <motion.p className="kicker" {...heroItem(0)}>
+            <span className="pulse" /> AI Engineer · Singapore
           </motion.p>
-          <motion.div className="cta" variants={item}>
-            <Magnetic><a className="btn primary" href="#work">View work →</a></Magnetic>
-            <a className="btn ghost" href={CONFIG.github}>GitHub</a>
+          <motion.h1 {...heroItem(1)}>
+            I build AI agents<br />
+            that do <em>real work</em>.
+          </motion.h1>
+          <motion.p className="sub" {...heroItem(2)}>
+            Production automation agents — AI wired into ERP systems, email, and document
+            workflows to remove manual, repetitive work end-to-end.
+          </motion.p>
+
+          <motion.div className="hero-meta" {...heroItem(3)}>
+            <div className="meta-col">
+              <h5>Focus</h5>
+              <ul>
+                <li>Automation agents</li>
+                <li>ERP &amp; document workflows</li>
+                <li>Full-stack AI products</li>
+                <li>Robotics &amp; computer vision</li>
+              </ul>
+            </div>
+            <div className="meta-col">
+              <h5>Currently</h5>
+              <ul>
+                <li>AI Engineer at SP Manufacturing</li>
+                <li>4+ agents in production / UAT</li>
+                <li>Migrating the suite to Azure</li>
+              </ul>
+            </div>
+            <div className="meta-col">
+              <h5>Contact</h5>
+              <ul>
+                {contactLinks.map((l, i) => (
+                  <li key={i}><a href={l.href} target="_blank" rel="noopener noreferrer">{l.label} ↗</a></li>
+                ))}
+              </ul>
+            </div>
           </motion.div>
-          <motion.div className="stats" variants={item}>
-            <div className="stat"><div className="n">4+</div><div className="l">production AI agents</div></div>
-            <div className="stat"><div className="n">ERP · Email · OCR</div><div className="l">workflows automated</div></div>
-            <div className="stat"><div className="n">AI · Full-stack · Robotics</div><div className="l">across the portfolio</div></div>
-          </motion.div>
-        </motion.div>
+        </div>
       </header>
 
-      {/* marquee */}
-      <Marquee items={["Anthropic Claude", "Business Central", "Python", "React", "Framer Motion", "ROS 2", "Azure", "RAG", "Computer Vision", "FastAPI", "OData", "Automation Agents"]} />
-
-      {/* terminal */}
-      <section style={{ paddingTop: 10 }}>
+      {/* terminal strip */}
+      <section className="term-sec" aria-label="About in brief">
         <div className="wrap">
-          <motion.div className="term" {...reveal}>
-            <div className="bar"><i className="r" /><i className="y" /><i className="g" /><span className="t mono">aneek@portfolio: ~</span></div>
-            <motion.div className="body mono" variants={container} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.4 }}>
-              {[
-                <><span className="p">$</span> <span className="c">whoami</span></>,
-                <span className="o">AI engineer. I build automation agents on top of foundation models —</span>,
-                <span className="o">prompting, tool use, retrieval, evals, and the unglamorous integration</span>,
-                <span className="o">work that makes them reliable in production.</span>,
-                <span className="o" style={{ opacity: 0 }}>.</span>,
-                <><span className="p">$</span> <span className="c">cat principles.txt</span></>,
-                <span className="o">› deterministic lookups before AI &nbsp; › cost &amp; latency are features</span>,
-                <span className="o">› log every call &nbsp; › fail loudly &nbsp; › ship, then measure</span>,
-              ].map((line, i) => <motion.div key={i} variants={item}>{line}</motion.div>)}
-            </motion.div>
+          <motion.div className="term mono" {...reveal}>
+            <div className="line"><span className="p">$</span> whoami</div>
+            <div className="line o">AI engineer. I build automation agents on top of foundation models —</div>
+            <div className="line o">prompting, tool use, retrieval, evals, and the unglamorous integration</div>
+            <div className="line o">work that makes them reliable in production.</div>
+            <div className="line gap"><span className="p">$</span> cat principles.txt</div>
+            <div className="line o">› deterministic lookups before AI · cost &amp; latency are features</div>
+            <div className="line o">› log every call · fail loudly · ship, then measure</div>
           </motion.div>
         </div>
       </section>
@@ -195,30 +144,76 @@ export default function App() {
       {/* work */}
       <section id="work">
         <div className="wrap">
-          <motion.div className="sec-head" {...reveal}><span className="tag">/ work</span><h2>Selected projects</h2></motion.div>
-          <motion.p className="lead" {...reveal}>
-            Click any project for the full story. A mix of production AI agents built into a live ERP,
-            a full-stack AI product, and robotics / computer-vision work.
-          </motion.p>
-          <motion.div className="grid" variants={container} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-40px" }}>
+          <motion.div className="sec-head" {...reveal}>
+            <h2>Selected <em>work</em></h2>
+            <p className="lead">
+              Production AI agents built into a live ERP, a full-stack AI product, and
+              robotics / computer-vision work. Select a project for the full story.
+            </p>
+          </motion.div>
+
+          <div className="plist" role="list">
             {PROJECTS.map((p, i) => {
               const st = STATUS[p.status] || STATUS.built;
               return (
-                <motion.div
-                  key={i} className="card" variants={item}
-                  whileHover={reduce ? {} : { y: -4 }}
-                  onMouseMove={spotlight}
+                <motion.article
+                  key={i} className="prow" role="listitem" tabIndex={0}
                   onClick={() => setActive(p)}
-                  role="button" tabIndex={0}
                   onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setActive(p); } }}
+                  initial={{ opacity: 0, y: d }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-40px" }}
+                  transition={{ duration: 0.55, delay: reduce ? 0 : 0.03 * (i % 4), ease: EASE }}
                 >
-                  <div className="top"><h3>{p.title}</h3><span className={`badge ${st.cls}`}>{p.statusLabel || st.label}</span></div>
-                  <p>{p.desc}</p>
-                  <div className="tags">{p.tags.map((t, j) => <span key={j} className="tag-c">{t}</span>)}</div>
-                  <span className="more">View details →</span>
-                </motion.div>
+                  <span className="pnum mono">{String(i + 1).padStart(2, "0")}</span>
+                  <div className="pmain">
+                    <h3>{p.title}</h3>
+                    <p>{p.desc}</p>
+                    <div className="tags">{p.tags.map((t, j) => <span key={j} className="tag-c">{t}</span>)}</div>
+                  </div>
+                  <div className="pside">
+                    <span className={`badge ${st.cls}`}>{p.statusLabel || st.label}</span>
+                    <span className="arrow" aria-hidden="true">→</span>
+                  </div>
+                </motion.article>
               );
             })}
+          </div>
+        </div>
+      </section>
+
+      {/* experience */}
+      <section id="experience">
+        <div className="wrap">
+          <motion.div className="sec-head" {...reveal}>
+            <h2>Experience</h2>
+          </motion.div>
+          <div className="xlist">
+            {EXPERIENCE.map((x, i) => (
+              <motion.div key={i} className="xrow" {...reveal}>
+                <div className="xwhen mono">{x.when}</div>
+                <div className="xbody">
+                  <h3>{x.role} <span className="xorg">· {x.org}, {x.where}</span></h3>
+                  <p>{x.blurb}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+          <motion.div className="edu" {...reveal}>
+            <div className="xrow">
+              <div className="xwhen mono">2024 — 2025</div>
+              <div className="xbody">
+                <h3>MSc Technology &amp; Design (Robotics &amp; Automation) <span className="xorg">· SUTD</span></h3>
+                <p>CGPA 3.94 / 4.5 · Singapore University of Technology and Design</p>
+              </div>
+            </div>
+            <div className="xrow">
+              <div className="xwhen mono">2021 — 2024</div>
+              <div className="xbody">
+                <h3>BEng (Hons) Mechanical Engineering <span className="xorg">· University of Manchester</span></h3>
+                <p>United Kingdom</p>
+              </div>
+            </div>
           </motion.div>
         </div>
       </section>
@@ -226,46 +221,46 @@ export default function App() {
       {/* stack */}
       <section id="stack">
         <div className="wrap">
-          <motion.div className="sec-head" {...reveal}><span className="tag">/ stack</span><h2>How I build</h2></motion.div>
-          <motion.div className="stack" variants={container} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-40px" }}>
+          <motion.div className="sec-head" {...reveal}>
+            <h2>How I <em>build</em></h2>
+          </motion.div>
+          <div className="slist">
             {[
-              ["AI / Agents", ["Anthropic Claude", "OpenAI / Gemini", "Tool use / function calling", "Agentic workflows", "RAG", "Prompt caching", "Vision / OCR", "Computer vision", "Evals", "Cost & usage control"]],
+              ["AI / Agents", ["Anthropic Claude", "OpenAI / Gemini", "Tool use", "Agentic workflows", "RAG", "Prompt caching", "Vision / OCR", "Computer vision", "Evals", "Cost & usage control"]],
               ["Frontend", ["React", "TypeScript", "Vite", "TailwindCSS", "Framer Motion", "Electron"]],
               ["Backend", ["Python", "Flask", "FastAPI", "Node / Express", "Socket.IO / WebSockets", "SQLite", "MongoDB"]],
               ["Integration & Automation", ["Dynamics 365 Business Central", "OData", "Selenium", "Outlook / Graph", "Document parsing"]],
               ["Robotics & Simulation", ["ROS 2", "Nav2", "Lidar / Depth fusion", "A* path planning", "Digital twins"]],
               ["Cloud & Ops", ["Azure", "Static Web Apps", "Azure SQL", "Entra ID", "Blob Storage", "Docker"]],
             ].map(([h, tags], i) => (
-              <motion.div key={i} className="scol" variants={item}>
+              <motion.div key={i} className="srow" {...reveal}>
                 <h4>{h}</h4>
                 <div className="row">{tags.map((t, j) => <span key={j} className="tag-c">{t}</span>)}</div>
               </motion.div>
             ))}
-          </motion.div>
+          </div>
         </div>
       </section>
 
-      {/* about */}
-      <section id="about" className="about">
+      {/* contact / footer */}
+      <footer id="contact">
         <div className="wrap">
-          <motion.div className="sec-head" {...reveal}><span className="tag">/ about</span><h2>About</h2></motion.div>
-          <motion.p {...reveal}>
-            I'm an <b>AI engineer</b> focused on turning foundation models into dependable production
-            systems. Most of my work lives <b>above the API line</b>: prompting, retrieval, tool use,
-            evals, and the integration and reliability engineering that makes an agent trustworthy
-            enough to run a real business process. Alongside that I build full-stack AI products and
-            have a background in robotics and computer vision. I currently build automation agents for
-            the operations and procurement teams at <b>SP Manufacturing</b>, wiring AI into ERP, email,
-            and document workflows.
-          </motion.p>
-        </div>
-      </section>
-
-      {/* footer */}
-      <footer>
-        <div className="wrap">
-          <div className="flinks">{footerLinks.map((l, i) => <a key={i} href={l.href}>{l.label}</a>)}</div>
-          <div className="fnote">© 2026 Aneek Chattopadhyay · Built with React + Framer Motion</div>
+          <motion.h2 className="f-big" {...reveal}>
+            Let's build something<br /><em>that ships.</em>
+          </motion.h2>
+          {CONFIG.email && (
+            <motion.a className="f-mail" href={`mailto:${CONFIG.email}`} {...reveal}>
+              {CONFIG.email}
+            </motion.a>
+          )}
+          <div className="f-bottom">
+            <div className="flinks">
+              {contactLinks.map((l, i) => (
+                <a key={i} href={l.href} target="_blank" rel="noopener noreferrer">{l.label}</a>
+              ))}
+            </div>
+            <div className="fnote">© 2026 Aneek Chattopadhyay</div>
+          </div>
         </div>
       </footer>
 
@@ -275,15 +270,15 @@ export default function App() {
           <motion.div
             className="modal-bg"
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
+            transition={{ duration: 0.18 }}
             onClick={(e) => { if (e.target === e.currentTarget) setActive(null); }}
           >
             <motion.div
               className="modal-panel"
-              initial={{ opacity: 0, y: 16, scale: 0.98 }}
+              initial={{ opacity: 0, y: 14, scale: 0.985 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 10, scale: 0.98 }}
-              transition={{ type: "spring", stiffness: 220, damping: 24 }}
+              exit={{ opacity: 0, y: 8, scale: 0.985 }}
+              transition={{ type: "spring", stiffness: 240, damping: 26 }}
             >
               <button className="modal-x" onClick={() => setActive(null)} aria-label="Close">×</button>
               <span className={`badge ${(STATUS[active.status] || STATUS.built).cls}`}>
