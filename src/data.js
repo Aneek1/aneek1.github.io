@@ -56,22 +56,31 @@ export const EXPERIENCE = [
 
 export const PROJECTS = [
   {
-    title: "PO Agent — Vendor Follow-up", status: "uat",
-    desc: "Autonomous agent that chases vendors for missing committed delivery dates on purchase orders — and stops the moment a vendor responds.",
-    tags: ["Python", "Claude API", "BC OData", "Selenium", "Outlook", "SQLite"],
+    title: "PO Agent — Vendor Follow-up", status: "deployed",
+    desc: "Autonomous agent that chases vendors for missing committed delivery dates on purchase orders — live in production, chasing daily.",
+    tags: ["Python", "Claude API", "BC OData", "SOAP web services", "Outlook", "SQLite"],
     detail: `<p><b>The problem.</b> Buyers spend hours each week manually emailing vendors to confirm delivery dates on open purchase orders, and re-chasing the ones that haven't replied.</p>
-      <p><b>What it does.</b> The agent reads released purchase orders from <b>Microsoft Dynamics 365 Business Central</b> over OData and, for any line still missing a vendor-committed date, emails the vendor a follow-up — escalating through a tiered ladder (gentle reminder → urgent → escalation) as time passes, with the official PO PDF attached.</p>
-      <p><b>Why it's reliable.</b> Before every send it re-reads the live ERP record, so a PO the vendor has already answered is never chased. Every send is logged and de-duplicated.</p>
-      <p><b>Tech.</b> Python · Anthropic Claude · Business Central OData · Selenium · Outlook · SQLite. <b>Status:</b> in UAT with buyers.</p>`,
+      <p><b>What it does.</b> The agent reads released purchase orders from <b>Microsoft Dynamics 365 Business Central</b> over OData and, for any line still missing a vendor-committed date, emails the vendor a follow-up — escalating through a tiered business-day ladder (reminder → urgent → escalation with management CC'd) as time passes, with the official PO PDF attached.</p>
+      <p><b>Why it's reliable.</b> Before every send it re-reads the live ERP record, so a PO the vendor has already answered is never chased. Every send is logged with retry/backoff and de-duplicated; failures alert the maintainer rather than dying silently. PO PDFs are generated server-side through a custom ERP web service — no browser in the loop.</p>
+      <p><b>Tech.</b> Python · Anthropic Claude · Business Central OData + SOAP codeunit · Outlook · SQLite. <b>Status:</b> live in production, running scheduled scans and chases daily.</p>`,
   },
   {
     title: "SO Agent — Sales Order Entry", status: "deployed",
-    desc: "Turns incoming customer POs (PDF / Excel / email) into Sales Orders in the ERP after a quick operator review.",
+    desc: "Turns incoming customer POs (PDF / Excel / email) into Sales Orders in the ERP after a quick operator review — piloting across two sites.",
     tags: ["Python", "Flask + Socket.IO", "Claude API", "Doc parsing", "BC OData"],
     detail: `<p><b>The problem.</b> Customer purchase orders arrive as PDFs, spreadsheets, and emails — and get re-typed into the ERP by hand, slowly and with errors.</p>
-      <p><b>What it does.</b> It ingests the document, uses AI to parse the line items, then matches each item and the customer against <b>live ERP master data</b> — including revision lookup and in-stock substitutes — and creates the Sales Order after a quick operator review.</p>
-      <p><b>Why it's reliable.</b> Nothing is written to the ERP until the operator approves. Order creation is fully browserless via OData and resilient to the ERP's number-series configuration.</p>
-      <p><b>Tech.</b> Python · Flask + Socket.IO · Anthropic Claude · document parsing · Business Central OData. <b>Status:</b> deployed and verified end-to-end.</p>`,
+      <p><b>What it does.</b> It ingests the document, uses AI to parse the line items (vision models for scanned image-only PDFs), then matches each item and the customer against <b>live ERP master data</b> — including revision lookup and in-stock substitutes — and creates the Sales Order after a quick operator review.</p>
+      <p><b>Why it's reliable.</b> Nothing is written to the ERP until the operator approves. Order creation is fully browserless via OData, and the whole agent ships as a <b>single self-contained EXE</b> — copy, double-click, pick your name, go.</p>
+      <p><b>Tech.</b> Python · Flask + Socket.IO · Anthropic Claude · document parsing · Business Central OData. <b>Status:</b> deployed; piloting with planning teams across two manufacturing sites.</p>`,
+  },
+  {
+    title: "PCN Agent — Part Change Notices", status: "deployed",
+    desc: "Reads supplier part-change / end-of-life notices from email and finds which of ~28,000 ERP parts are actually affected.",
+    tags: ["Python", "Claude API", "IMAP", "BC OData", "PDF/XLSX parsing", "SQL Server"],
+    detail: `<p><b>The problem.</b> Suppliers announce part changes and end-of-life notices in wildly different formats — PDFs, spreadsheets, plain-email digests, links. Sourcing manually cross-checked each one against the item master: ~2 hours per 50-part notice, with real misses.</p>
+      <p><b>What it does.</b> Monitors the PCN mailbox, parses each notice with a registry of <b>per-vendor deterministic readers</b> (falling back to AI extraction for unknown formats), then matches every announced part against the live ERP item master — including <b>family and wildcard patterns</b> ("PIC18F2xx") and separator-insensitive part-number matching — and produces the affected-parts table, department email draft, and master-list rows.</p>
+      <p><b>Why it's reliable.</b> The document's own content outranks the email envelope when routing to a parser; cover letters that say "see the attached Excel" automatically fall through to the spreadsheet; and failed parses surface as visible error cards instead of vanishing. It has repeatedly caught affected parts human review missed.</p>
+      <p><b>Tech.</b> Python · Anthropic Claude · IMAP · Business Central OData · PDF/XLSX parsing · SQL Server. <b>Status:</b> deployed; validated against Sourcing's hand-matched gold standard.</p>`,
   },
   {
     title: "OCR Agent — Document Extraction", status: "deployed",
@@ -99,12 +108,20 @@ export const PROJECTS = [
       <p><b>Tech.</b> Azure (Static Web Apps, Azure SQL, Blob Storage, Entra ID) · FastAPI / Flask · worker-queue pattern. <b>Status:</b> in progress.</p>`,
   },
   {
-    title: "Workflow Apps — NCMR / MR & LMS", status: "deployed",
-    desc: "Turned internal prototypes into real apps — document workflows and a learning / presentation platform.",
-    tags: ["Flask", "SQLite", "JavaScript", "Azure"],
+    title: "LearnLoop — AI Learning Management System", status: "deployed",
+    desc: "Full LMS where AI builds the training deck, quiz, and translations — trainees learn and get assessed in their own language.",
+    tags: ["Python", "React", "Claude API", "Google Forms API", "SQL Server", "SMTP"],
+    detail: `<p><b>What it does.</b> A complete internal LMS: trainers upload source material (or let AI generate a deck from a topic), and the system produces the presentation, a configurable quiz, and <b>full translations (English / Chinese / Indonesian)</b> — slides and quiz both — so a trainee sees everything in the language their trainer assigned.</p>
+      <p><b>The whole loop is automated.</b> Assigning a training emails the trainee a deep link, deadline, and a <b>Google Form version of the quiz with a QR code</b> — auto-built per language via the Forms API, and auto-rebuilt whenever the quiz changes. Responses are pulled back and merged with portal attempts under a best-score-before-deadline policy. Reminders and overdue escalations run hourly; offline classes get printed quiz sheets with CSV re-import and AI answer-sheet matching.</p>
+      <p><b>Roles &amp; records.</b> Trainee / Trainer / HOD / Admin roles with scoped access, HOD team assignment, and generated training records matching the company's controlled form.</p>
+      <p><b>Tech.</b> Python · React · Anthropic Claude · Google Forms API · SQL Server · SMTP. <b>Status:</b> deployed and in daily use.</p>`,
+  },
+  {
+    title: "Workflow Apps — NCMR / MR", status: "deployed",
+    desc: "Turned internal document-workflow prototypes into real multi-user apps with server-side persistence.",
+    tags: ["Flask", "SQLite", "JavaScript"],
     detail: `<p><b>What it does.</b> Productised internal tools. Two document-workflow prototypes (non-conformance reports and material requests) were ported from standalone HTML into a single <b>Flask + SQLite</b> app with server-side persistence — preserving the original interface via a localStorage→server shim so users saw no disruption.</p>
-      <p>Also built a learning / presentation platform running on shared cloud infrastructure.</p>
-      <p><b>Tech.</b> Flask · SQLite · JavaScript · Azure. <b>Status:</b> deployed.</p>`,
+      <p><b>Tech.</b> Flask · SQLite · JavaScript. <b>Status:</b> deployed.</p>`,
   },
   // ── open-source / personal projects (public on GitHub) ──
   {
