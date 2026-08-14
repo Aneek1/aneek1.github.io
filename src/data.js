@@ -125,6 +125,16 @@ export const PROJECTS = [
   },
   // ── open-source / personal projects (public on GitHub) ──
   {
+    title: "DaybreakOS — Linux distro with on-device AI", status: "oss",
+    link: "https://github.com/Aneek1/daybreakos",
+    desc: "A Linux distribution built from source, with a desktop environment written from scratch in C and an LLM assistant that runs entirely offline.",
+    tags: ["Linux From Scratch", "C / GTK3", "Wayland", "llama.cpp", "Bash", "Kernel config"],
+    detail: `<p><b>What it is.</b> A complete Linux distribution built from source with <b>Linux From Scratch 12.3 (systemd)</b> — toolchain, kernel and userland compiled from upstream tarballs by 13 sequential build scripts. It boots into <b>Aurora Shell</b>: a desktop environment I wrote in <b>C with GTK3 and gtk-layer-shell</b> over the <code>labwc</code> Wayland compositor. Not a browser kiosk and not a re-skinned desktop — the top bar, dock, launcher, control centre, notifications, lock screen and wallpaper are all its own code.</p>
+      <p><b>The AI part.</b> <b>Aura</b> is an on-device assistant (llama.cpp with a bundled Qwen2.5 model) that both answers questions and <i>operates the desktop</i> — "open a terminal", "system status", "set brightness to 40" — through a small system-bridge daemon. It runs <b>entirely offline</b>: no cloud, no account, no telemetry. The thesis is that useful on-device AI should be free and should work on hardware people already own.</p>
+      <p><b>The hard parts.</b> Getting hardware-accelerated graphics working across <b>AMD (radeonsi), NVIDIA (nouveau) and Intel (iris)</b> Mesa drivers — the Intel path needing clang, SPIR-V and libclc built first; an <b>install-to-disk</b> path (GPT + ext4 + UEFI GRUB) that turns the live squashfs into a real system; persistent storage via an overlay upper-dir; and an app store that extracts and runs packages from a plain catalogue. Builds for <b>x86_64 and aarch64</b>.</p>
+      <p><b>Tech.</b> Linux From Scratch · C / GTK3 / gtk-layer-shell · labwc / Wayland · llama.cpp · Bash · kernel configuration · Mesa. <b>Status:</b> boots on bare metal and in VMs; open source.</p>`,
+  },
+  {
     title: "AIApplyMate", status: "oss", link: "https://github.com/Aneek1/aiapplymate",
     desc: "Full-stack AI web app that tailors résumés to a job description and writes matching cover letters, with ATS scoring.",
     tags: ["React", "TypeScript", "Node / Express", "MongoDB", "Gemini API", "Vite"],
