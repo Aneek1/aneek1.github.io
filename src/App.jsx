@@ -103,6 +103,7 @@ export default function App() {
                 <li>Automation agents</li>
                 <li>ERP &amp; document workflows</li>
                 <li>Full-stack AI products</li>
+                <li>Multilingual NLP &amp; on-device AI</li>
                 <li>Robotics &amp; computer vision</li>
               </ul>
             </div>
@@ -226,7 +227,9 @@ export default function App() {
           </motion.div>
           <div className="slist">
             {[
-              ["AI / Agents", ["Anthropic Claude", "OpenAI / Gemini", "Tool use", "Agentic workflows", "RAG", "Prompt caching", "Vision / OCR", "Computer vision", "Evals", "Cost & usage control"]],
+              ["AI / Agents", ["Anthropic Claude", "OpenAI / Gemini", "Tool use", "Agentic workflows", "RAG", "Prompt caching", "Vision / OCR", "Computer vision", "Evals", "On-device LLMs (llama.cpp, Ollama)", "JSON-schema constrained decoding", "Cost & usage control"]],
+              ["Language & NLP", ["Language identification", "GlotLID / fastText", "Script detection & Unicode normalization", "Simplified / Traditional Chinese (OpenCC)", "Multilingual embeddings (e5)", "Script-aware chunking", "Vector search (Qdrant)", "Citation checking", "Model quantization"]],
+              ["Linux & OS Dev", ["Linux From Scratch", "Kernel configuration", "C / GTK3", "Wayland (wlroots, labwc)", "systemd", "Mesa GPU drivers", "UEFI / GRUB", "squashfs / overlayfs", "Bash build pipelines", "QEMU / VirtualBox"]],
               ["Frontend", ["React", "TypeScript", "Vite", "TailwindCSS", "Framer Motion", "Electron"]],
               ["Backend", ["Python", "Flask", "FastAPI", "Node / Express", "Socket.IO / WebSockets", "SQLite", "MongoDB"]],
               ["Integration & Automation", ["Dynamics 365 Business Central", "OData", "Selenium", "Outlook / Graph", "Document parsing"]],
