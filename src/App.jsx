@@ -101,10 +101,10 @@ export default function App() {
               <h5>Focus</h5>
               <ul>
                 <li>Automation agents</li>
-                <li>ERP &amp; document workflows</li>
+                <li>ERP & document workflows</li>
                 <li>Full-stack AI products</li>
-                <li>Multilingual NLP &amp; on-device AI</li>
-                <li>Robotics &amp; computer vision</li>
+                <li>Multilingual NLP & on-device AI</li>
+                <li>Robotics & computer vision</li>
               </ul>
             </div>
             <div className="meta-col">
@@ -136,7 +136,7 @@ export default function App() {
             <div className="line o">prompting, tool use, retrieval, evals, and the unglamorous integration</div>
             <div className="line o">work that makes them reliable in production.</div>
             <div className="line gap"><span className="p">$</span> cat principles.txt</div>
-            <div className="line o">› deterministic lookups before AI · cost &amp; latency are features</div>
+            <div className="line o">› deterministic lookups before AI · cost & latency are features</div>
             <div className="line o">› log every call · fail loudly · ship, then measure</div>
           </motion.div>
         </div>
@@ -204,7 +204,7 @@ export default function App() {
             <div className="xrow">
               <div className="xwhen mono">2024 — 2025</div>
               <div className="xbody">
-                <h3>MSc Technology &amp; Design (Robotics &amp; Automation) <span className="xorg">· SUTD</span></h3>
+                <h3>MSc Technology & Design (Robotics & Automation) <span className="xorg">· SUTD</span></h3>
                 <p>CGPA 3.94 / 4.5 · Singapore University of Technology and Design</p>
               </div>
             </div>
