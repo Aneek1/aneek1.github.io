@@ -164,10 +164,13 @@ export const PROJECTS = [
   },
   {
     title: "Soft-Robotics Chatbot", status: "oss", link: "https://github.com/Aneek1/ai-chatbot-softrobotics",
-    desc: "A retrieval chatbot that answers soft-robotics fabrication questions from a curated dataset.",
-    tags: ["Python", "Gemini API", "spaCy", "RAG", "GUI"],
-    detail: `<p><b>What it is.</b> An intelligent chatbot that answers questions about soft-robotics fabrication methods.</p>
-      <p><b>How it works.</b> It retrieves from a curated CSV knowledge base and uses Google Gemini to compose answers — an early retrieval-augmented assistant, with spaCy NLP and a cross-platform desktop GUI.</p>
-      <p><b>Tech.</b> Python · Google Gemini · spaCy · CSV retrieval.</p>`,
+    desc: "A multilingual RAG assistant for soft-robotics questions, with a language-ID model I trained and published.",
+    tags: ["Python", "FastAPI", "React", "RAG", "Language ID", "ONNX", "Docker"],
+    detail: `<p><b>What it is.</b> A rebuild of an earlier chatbot into a multilingual retrieval-augmented assistant: it identifies the language of a question, retrieves passages from a licence-tracked knowledge base, and answers with citations. A private mode keeps everything on-device and writes no history.</p>
+      <p><b>The part I care about: language identification.</b> Off-the-shelf detectors fail exactly where this application needs them — Malay vs Indonesian, Simplified vs Traditional Chinese, romanized Hindi vs Urdu vs English. I trained three specialists to sit behind GlotLID as a second stage and measured them on FLORES-200 devtest (206,448 sentences). The fine-tuned <code>multilingual-e5-small</code> reaches <b>0.925 macro-F1</b> against GlotLID's 0.939 alone, and the two-stage arrangement reaches <b>0.942</b>. The honest reading: the overall gain is small. The real wins are short and code-mixed input — on single romanized words GlotLID scores 0.142 and fastText's <code>lid.176</code> scores 0.003, while the fine-tuned model reaches <b>0.675</b> — and speed, where a 1.9 MB fastText specialist does 14,577 sentences/s at 0.882 macro-F1 versus GlotLID's 1,538/s from 1.69 GB.</p>
+      <p><b>Measured properly.</b> Training data was de-contaminated against every held-out set: 7,543 lines removed, and the final check found 0 rows overlapping any evaluation line. Data provenance (OpenLID, Dakshina, FLORES-200) and every model licence are recorded in the repo. Published on Hugging Face with a model card that states the limitations, including that several test splits are hash splits rather than source-disjoint, so those scores are likely optimistic.</p>
+      <p><b>What is not finished.</b> The React workspace UI is a skeleton, and the RAG-side evaluation is partly built. The README says so too — I would rather it be accurate than look complete.</p>
+      <p><b>Tech.</b> Python · FastAPI · React + TypeScript · PyTorch → ONNX · fastText · Docker (amd64 + arm64) · GitHub Actions across Linux, Windows and macOS.</p>
+      <p><a href="https://huggingface.co/AneekC/lid-specialists-9plus1" target="_blank" rel="noreferrer">Model on Hugging Face →</a></p>`,
   },
 ];
