@@ -57,21 +57,25 @@ export const EXPERIENCE = [
 export const PROJECTS = [
   {
     title: "PO Agent — Vendor Follow-up", status: "deployed",
-    desc: "Autonomous agent that chases vendors for missing committed delivery dates on purchase orders — live in production, chasing daily.",
-    tags: ["Python", "Claude API", "BC OData", "SOAP web services", "Outlook", "SQLite"],
-    detail: `<p><b>The problem.</b> Buyers spend hours each week manually emailing vendors to confirm delivery dates on open purchase orders, and re-chasing the ones that haven't replied.</p>
-      <p><b>What it does.</b> The agent reads released purchase orders from <b>Microsoft Dynamics 365 Business Central</b> over OData and, for any line still missing a vendor-committed date, emails the vendor a follow-up — escalating through a tiered business-day ladder (reminder → urgent → escalation with management CC'd) as time passes, with the official PO PDF attached.</p>
-      <p><b>Why it's reliable.</b> Before every send it re-reads the live ERP record, so a PO the vendor has already answered is never chased. Every send is logged with retry/backoff and de-duplicated; failures alert the maintainer rather than dying silently. PO PDFs are generated server-side through a custom ERP web service — no browser in the loop.</p>
-      <p><b>Tech.</b> Python · Anthropic Claude · Business Central OData + SOAP codeunit · Outlook · SQLite. <b>Status:</b> live in production, running scheduled scans and chases daily.</p>`,
+    desc: "Chases vendors for missing delivery dates on purchase orders, sending as each buyer from their own mailbox. 19 buyers live; 1,206 vendor emails in the two weeks to 8 Oct 2026.",
+    tags: ["Python", "Claude API", "BC OData", "SOAP web services", "SMTP", "SQL Server"],
+    detail: `<p><b>The problem.</b> Buyers spend hours each week emailing vendors to confirm delivery dates on open purchase orders, and re-chasing the ones that don't reply.</p>
+      <p><b>What it does.</b> Twice a day the agent reads newly released purchase orders from <b>Microsoft Dynamics 365 Business Central</b> over OData and emails the vendor the official PO PDF. Lines still missing a vendor-committed date are chased on a business-day ladder (reminder, urgent, escalation with management copied). Each email goes out as the buyer who owns the PO, from their own mailbox and under their own ERP login, so there is no shared account that can lock everyone out.</p>
+      <p><b>Knowing what not to send.</b> Before every send it re-reads the live ERP record, and it skips POs that reach the vendor another way: EDI transmissions, orders placed on a vendor's website (an ERP toggle the purchasing team added), excluded vendors, and a do-not-email list buyers manage themselves.</p>
+      <p><b>A failure I had to find.</b> Vendor records hold several addresses in one field. Passed to the mail server as a single recipient they were refused, and because the buyer's own copy was accepted the mail library reported success. From 17 Jul to 3 Aug 2026, 46 of 54 vendor emails were never delivered while the logs looked clean; it surfaced only when a vendor said they had not received a PO. The fix splits the addresses, records which recipients the server actually accepted, and alerts when no vendor address got through. Delivery is now measured, not assumed.</p>
+      <p><b>Running it.</b> Each buyer gets a short plain-language email in the morning, only when something needs them: a PO that couldn't be sent, a vendor with no date after the final reminder, a login the ERP rejected. A watchdog checks the agent every 10 minutes. Changes go to a separate UAT instance first, and every release is versioned with its test evidence attached.</p>
+      <p><b>Numbers.</b> 24 Sep to 8 Oct 2026: 1,206 vendor emails accepted by the mail server (655 first sends, 551 reminders) across 694 POs and 252 vendors. Source: the agent's send ledger.</p>
+      <p><b>Tech.</b> Python · Anthropic Claude · Business Central OData + SOAP codeunit · SMTP/IMAP · SQL Server. <b>Status:</b> in production since July 2026, rolled out buyer by buyer.</p>`,
   },
   {
     title: "SO Agent — Sales Order Entry", status: "deployed",
-    desc: "Turns incoming customer POs (PDF / Excel / email) into Sales Orders in the ERP after a quick operator review — piloting across two sites.",
+    desc: "Turns customer purchase orders (PDF, Excel, email) into ERP sales orders after a planner reviews them. Each planner pushes orders under their own ERP login.",
     tags: ["Python", "Flask + Socket.IO", "Claude API", "Doc parsing", "BC OData"],
-    detail: `<p><b>The problem.</b> Customer purchase orders arrive as PDFs, spreadsheets, and emails — and get re-typed into the ERP by hand, slowly and with errors.</p>
-      <p><b>What it does.</b> It ingests the document, uses AI to parse the line items (vision models for scanned image-only PDFs), then matches each item and the customer against <b>live ERP master data</b> — including revision lookup and in-stock substitutes — and creates the Sales Order after a quick operator review.</p>
-      <p><b>Why it's reliable.</b> Nothing is written to the ERP until the operator approves. Order creation is fully browserless via OData, and the whole agent ships as a <b>single self-contained EXE</b> — copy, double-click, pick your name, go.</p>
-      <p><b>Tech.</b> Python · Flask + Socket.IO · Anthropic Claude · document parsing · Business Central OData. <b>Status:</b> deployed; piloting with planning teams across two manufacturing sites.</p>`,
+    detail: `<p><b>The problem.</b> Customer purchase orders arrive as PDFs, spreadsheets and emails, and get re-typed into the ERP by hand, slowly and with errors.</p>
+      <p><b>What it does.</b> It reads the document, uses AI to extract the line items (a vision model for scanned PDFs with no text layer), then matches the customer and each item against <b>live ERP master data</b>, including revisions and in-stock substitutes. Nothing is written until the planner has reviewed the lines; it then creates the sales orders over OData and lists each one with a link into the ERP.</p>
+      <p><b>The ERP is the authority.</b> When a document disagrees with the ERP on a description, location or item code, the ERP value wins, and a part number that only partly matches is flagged for the planner rather than accepted. Some customers print their own material number with the manufacturer's part number beside it. The agent reads both; when the customer's number isn't in the ERP it looks the item up by the manufacturer's part number, split into base part and revision, under the same exact-match rule, and remembers the match for the next order.</p>
+      <p><b>Multi-user.</b> One server, many planners. Each planner sees only their own orders and pushes them under their own ERP login, so the ERP's audit trail shows who created what. Customer-specific readers handle the formats general extraction gets wrong, with regression tests built from real documents.</p>
+      <p><b>Tech.</b> Python · Flask + Socket.IO · Anthropic Claude · document parsing · Business Central OData. <b>Status:</b> in production with planning teams at two manufacturing sites.</p>`,
   },
   {
     title: "PCN Agent — Part Change Notices", status: "deployed",
@@ -109,11 +113,12 @@ export const PROJECTS = [
   },
   {
     title: "LearnLoop — AI Learning Management System", status: "deployed",
-    desc: "Full LMS where AI builds the training deck, quiz, and translations — trainees learn and get assessed in their own language.",
+    desc: "Internal LMS where AI builds the deck, quiz and translations. When a quality procedure is revised, it works out exactly what changed and trains people on that.",
     tags: ["Python", "React", "Claude API", "Google Forms API", "SQL Server", "SMTP"],
-    detail: `<p><b>What it does.</b> A complete internal LMS: trainers upload source material (or let AI generate a deck from a topic), and the system produces the presentation, a configurable quiz, and <b>full translations (English / Chinese / Indonesian)</b> — slides and quiz both — so a trainee sees everything in the language their trainer assigned.</p>
-      <p><b>The whole loop is automated.</b> Assigning a training emails the trainee a deep link, deadline, and a <b>Google Form version of the quiz with a QR code</b> — auto-built per language via the Forms API, and auto-rebuilt whenever the quiz changes. Responses are pulled back and merged with portal attempts under a best-score-before-deadline policy. Reminders and overdue escalations run hourly; offline classes get printed quiz sheets with CSV re-import and AI answer-sheet matching.</p>
-      <p><b>Roles &amp; records.</b> Trainee / Trainer / HOD / Admin roles with scoped access, HOD team assignment, and generated training records matching the company's controlled form.</p>
+    detail: `<p><b>What it does.</b> Trainers upload source material (or have AI draft a deck from a topic), and the system produces the slides, a quiz with the size and pass mark the trainer sets, and <b>translations (English, Chinese, Indonesian)</b> of both, so each trainee learns and is assessed in their own language.</p>
+      <p><b>Procedure revisions.</b> When a quality procedure or work instruction moves to a new revision, staff need training on what changed, not a re-read of the whole document. QA uploads the old and new versions. A <b>deterministic clause-by-clause comparison</b> decides what was added, removed, reworded or moved, including images; AI only explains each change in plain language. QA reviews the list, and the approved change report becomes the training material and the source of the quiz. The training stays a draft until it is published, then goes to the people chosen during review. QA can hand a finished training to department heads: each gets their own copy to assign to their team and is named as the trainer on those staff's records.</p>
+      <p><b>The loop is automated.</b> Assigning a training emails a deep link, the deadline and a <b>Google Form version of the quiz with a QR code</b>, built per language through the Forms API and rebuilt when the quiz changes. Responses are merged with portal attempts. Reminders and overdue escalations run hourly, and offline classes get printed quiz sheets with CSV re-import.</p>
+      <p><b>Roles and records.</b> Trainee, trainer, department head, HR and admin roles with scoped access, recorded classroom sessions, and training records generated in the company's controlled form layout.</p>
       <p><b>Tech.</b> Python · React · Anthropic Claude · Google Forms API · SQL Server · SMTP. <b>Status:</b> deployed and in daily use.</p>`,
   },
   {
